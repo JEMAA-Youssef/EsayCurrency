@@ -1,0 +1,916 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EasyCurrency{% endblock %}
+
+{% block stylesheets %}
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Palette de couleurs moderne */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-gradient: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+
+            /* Couleurs principales */
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --success-color: #00f2fe;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --text-muted: #a0aec0;
+
+            /* Ombres modernes */
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 25px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.15);
+
+            /* Bordures */
+            --border-radius: 16px;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background-gradient);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animations d'entrée */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Container principal */
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        /* Motif de fond décoratif */
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            background: var(--card-gradient);
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Titre principal */
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            animation: slideInFromLeft 0.8s ease-out 0.2s both;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        /* Messages flash améliorés */
+        .alert {
+            border-radius: var(--border-radius);
+            padding: 1.25rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-out;
+            box-shadow: var(--shadow-md);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        /* Formulaire */
+        .form-container {
+            animation: slideInFromRight 0.8s ease-out 0.4s both;
+        }
+        .form-container {
+            position: relative;
+            z-index: 100;
+        }
+
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 1.25rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Styles pour Choices.js - CORRECTIFS APPLIQUÉS */
+        .choices {
+            position: relative;
+            z-index: 10;
+        }
+
+        .choices__inner {
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            font-size: 1.1rem;
+            min-height: auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .choices:focus-within .choices__inner {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* CORRECTIF PRINCIPAL : Liste déroulante plus visible et z-index élevé */
+        .choices__list--dropdown {
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(20px);
+            background: #ffffff !important;
+            z-index: 9999 !important;
+            position: absolute !important;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .choices__item--selectable {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            border-radius: var(--border-radius-sm);
+            margin: 4px;
+            color: var(--text-primary) !important;
+            background: transparent;
+        }
+
+        .choices__item--selectable:hover,
+        .choices__item--selectable.is-highlighted {
+            background: var(--primary-gradient) !important;
+            color: white !important;
+            transform: translateX(4px);
+        }
+
+        .choices__item img {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.75rem;
+            width: 24px;
+            height: 18px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* CORRECTIF : Input de recherche dans la liste */
+        .choices__input {
+            background: rgba(255,255,255,0.9) !important;
+            border: 1px solid rgba(102, 126, 234, 0.2) !important;
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem !important;
+            margin: 8px !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* Grille du formulaire */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1.5rem;
+            align-items: end;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Bouton d'échange */
+        #swap-btn {
+            background: var(--secondary-gradient);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        #swap-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        #swap-btn:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        #swap-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        #swap-btn:active {
+            transform: rotate(180deg) scale(0.95);
+        }
+
+        /* CORRECTIF : Bouton principal avec z-index plus bas */
+        .btn-convert {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 1.25rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            font-family: inherit;
+            z-index: 1;
+        }
+
+        .btn-convert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .btn-convert:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-convert:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-convert:active {
+            transform: translateY(-1px);
+        }
+
+        /* Indicateur de chargement */
+        #loading-indicator {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+            animation: fadeIn 0.3s ease;
+            z-index: 1;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Séparateur */
+        .separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            margin: 3rem 0;
+            border-radius: 1px;
+        }
+
+        /* Container de résultats */
+        #result-container {
+            background: var(--card-gradient);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            border-left: 6px solid var(--primary-color);
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.5s ease;
+            position: relative;
+            overflow: visible;
+            z-index: 0;
+        }
+
+        #result-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--primary-gradient);
+            opacity: 0.05;
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .conversion-result {
+            position: relative;
+            z-index: 1;
+        }
+
+        .conversion-from {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .conversion-to {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .conversion-details {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .conversion-rate {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius-sm);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        /* Messages d'erreur */
+        .error-message {
+            color: #e53e3e;
+            font-weight: 600;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            border-radius: var(--border-radius);
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-control,
+            .form-select,
+            .choices__inner {
+                padding: 1rem 1.25rem;
+                font-size: 1rem;
+            }
+
+            .btn-convert {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            .conversion-to {
+                font-size: 2.5rem;
+            }
+
+            #swap-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+
+            /* CORRECTIF Mobile : Liste déroulante adaptée */
+            .choices__list--dropdown {
+                max-height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 1rem 0.5rem;
+            }
+
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .conversion-to {
+                font-size: 2rem;
+            }
+        }
+
+        /* Accessibilité */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Mode sombre (optionnel) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-primary: #f7fafc;
+                --text-secondary: #e2e8f0;
+                --text-muted: #a0aec0;
+                --card-gradient: linear-gradient(145deg, #2d3748 0%, #4a5568 100%);
+            }
+
+            .container {
+                background: var(--card-gradient);
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .form-control,
+            .form-select,
+            .choices__inner {
+                background: rgba(45, 55, 72, 0.8);
+                color: var(--text-primary);
+                border-color: rgba(102, 126, 234, 0.3);
+            }
+
+            .choices__list--dropdown {
+                background: #2d3748 !important;
+                border-color: rgba(102, 126, 234, 0.3);
+            }
+
+            .choices__item--selectable {
+                color: var(--text-primary) !important;
+            }
+
+            .choices__input {
+                background: rgba(45, 55, 72, 0.9) !important;
+                color: var(--text-primary) !important;
+            }
+
+            #result-container {
+                background: var(--card-gradient);
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="main-container">
+        <div class="container">
+            <h1>Convertisseur de devises</h1>
+
+            {# Messages flash #}
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }}">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="form-container">
+                <form id="convert-form">
+                    <div class="form-group">
+                        <label class="form-label"> Montant</label>
+                        <input type="number" name="amount" required step="0.01" value="{{ amount }}" class="form-control" placeholder="Entrez le montant à convertir" />
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label"> De</label>
+                            <select id="currency-from" name="from" class="form-select">
+                                {% for code, info in symbols %}
+                                    <option value="{{ code }}" {{ code == from ? 'selected' : '' }} data-custom-properties='{"flagUrl":"{{ info.flag_url }}"}'>
+                                        {{ code }} – {{ info.description }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="text-align: center;">
+                            <button type="button" id="swap-btn" title="Permuter les devises">
+                                ⇄
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"> À</label>
+                            <select id="currency-to" name="to" class="form-select">
+                                {% for code, info in symbols %}
+                                    <option value="{{ code }}" {{ code == to ? 'selected' : '' }} data-custom-properties='{"flagUrl":"{{ info.flag_url }}"}'>
+                                        {{ code }} – {{ info.description }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn-convert">
+                             Convertir maintenant
+                        </button>
+                    </div>
+                </form>
+
+                <div id="loading-indicator">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Conversion en cours...</div>
+                </div>
+
+                <div class="separator"></div>
+
+                <div id="result-container">
+                    {% if result is defined and result is not null %}
+                        <div class="conversion-result">
+                            <div class="conversion-from">{{ amount|number_format(2, '.', ' ') }} {{ from }} =</div>
+                            <div class="conversion-to">{{ result|number_format(4, '.', ' ') }} {{ to }}</div>
+                            <div class="conversion-details">
+                                <div class="conversion-rate">
+                                     Taux de change : 1 {{ from }} = {{ rate }} {{ to }}
+                                </div>
+                                <div style="margin-top: 1rem;">
+                                     Dernière mise à jour : {{ "now"|date("d/m/Y à H:i") }}
+                                    <br>
+                                     Source : ExchangeRate.host
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif request.query.all %}
+                        <div class="error-message">
+                             Aucune donnée de conversion disponible. Veuillez réessayer.
+                        </div>
+                    {% else %}
+                        <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">💱</div>
+                            <div style="font-size: 1.2rem; font-weight: 500;">Prêt pour la conversion</div>
+                            <div>Sélectionnez vos devises et cliquez sur "Convertir"</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animation d'entrée progressive
+            const animateElements = document.querySelectorAll('.form-group');
+            animateElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 * (index + 1));
+            });
+
+            // Initialisation des sélecteurs de devises
+            const choicesInstances = {};
+
+            ['currency-from', 'currency-to'].forEach(function (id) {
+                const select = document.getElementById(id);
+                if (!select) return;
+
+                choicesInstances[id] = new Choices(select, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    allowHTML: true,
+                    searchPlaceholderValue: 'Rechercher une devise...',
+                    noResultsText: 'Aucune devise trouvée',
+                    callbackOnCreateTemplates: function (template) {
+                        return {
+                            item: function (classNames, data) {
+                                const flagUrl = data.customProperties?.flagUrl;
+                                const img = flagUrl ? `<img src="${flagUrl}" alt="flag" style="width:24px;height:18px;margin-right:8px;vertical-align:middle;border-radius:4px;box-shadow:0 2px 4px rgba(0,0,0,0.1);" onerror="this.style.display='none'">` : '';
+                                return template(`
+                                    <div class="${classNames.item} ${data.highlighted ? classNames.highlightedState : classNames.itemSelectable}"
+                                         data-item data-id="${data.id}" data-value="${data.value}"
+                                         ${data.active ? 'aria-selected="true"' : ''}
+                                         ${data.disabled ? 'aria-disabled="true"' : ''}>
+                                        ${img}${data.label}
+                                    </div>`);
+                            },
+                            option: function (classNames, data) {
+                                const flagUrl = data.customProperties?.flagUrl;
+                                const img = flagUrl ? `<img src="${flagUrl}" alt="flag" style="width:24px;height:18px;margin-right:8px;vertical-align:middle;border-radius:4px;box-shadow:0 2px 4px rgba(0,0,0,0.1);" onerror="this.style.display='none'">` : '';
+                                return template(`
+                                    <div class="${classNames.item} ${classNames.itemSelectable}"
+                                         data-select-text="" data-choice
+                                         ${data.disabled ? 'data-choice-disabled aria-disabled="true"' : 'data-choice-selectable'}
+                                         data-id="${data.id}" data-value="${data.value}" role="option">
+                                        ${img}${data.label}
+                                    </div>`);
+                            }
+                        };
+                    }
+                });
+            });
+
+            // Fonction de permutation des devises avec animation
+            const swapBtn = document.getElementById('swap-btn');
+            swapBtn?.addEventListener('click', () => {
+                const fromInstance = choicesInstances['currency-from'];
+                const toInstance = choicesInstances['currency-to'];
+                if (!fromInstance || !toInstance) return;
+
+                // Animation du bouton
+                swapBtn.style.transform = 'rotate(180deg) scale(1.2)';
+                setTimeout(() => {
+                    swapBtn.style.transform = 'rotate(360deg) scale(1)';
+                }, 300);
+
+                // Permutation des valeurs
+                const fromValue = fromInstance.getValue(true);
+                const toValue = toInstance.getValue(true);
+
+                fromInstance.setChoiceByValue(toValue);
+                toInstance.setChoiceByValue(fromValue);
+
+                // Effet visuel sur les sélecteurs
+                const fromContainer = document.querySelector('#currency-from').closest('.form-group');
+                const toContainer = document.querySelector('#currency-to').closest('.form-group');
+
+                [fromContainer, toContainer].forEach(container => {
+                    container.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        container.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+
+            // Gestion du formulaire avec animations
+            const form = document.getElementById('convert-form');
+            const resultContainer = document.getElementById('result-container');
+            const loader = document.getElementById('loading-indicator');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Animation du bouton de soumission
+                const submitBtn = form.querySelector('.btn-convert');
+                submitBtn.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    submitBtn.style.transform = 'scale(1)';
+                }, 100);
+
+                // Affichage du loader avec animation
+                loader.style.display = 'block';
+                resultContainer.style.opacity = '0.5';
+                resultContainer.style.transform = 'scale(0.98)';
+
+                const amount = form.querySelector('input[name="amount"]').value;
+                const from = document.getElementById('currency-from').value;
+                const to = document.getElementById('currency-to').value;
+
+                fetch(`?amount=${encodeURIComponent(amount)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Masquage du loader
+                        loader.style.display = 'none';
+
+                        // Parsing et mise à jour du résultat
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const result = doc.querySelector('#result-container');
+
+                        if (result) {
+                            resultContainer.innerHTML = result.innerHTML;
+                        } else {
+                            resultContainer.innerHTML = '<div class="error-message"> Erreur lors de la conversion. Veuillez réessayer.</div>';
+                        }
+
+                        // Animation d'apparition du résultat
+                        resultContainer.style.opacity = '0';
+                        resultContainer.style.transform = 'translateY(20px)';
+
+                        setTimeout(() => {
+                            resultContainer.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                            resultContainer.style.opacity = '1';
+                            resultContainer.style.transform = 'translateY(0)';
+                        }, 100);
+                    })
+                    .catch(() => {
+                        loader.style.display = 'none';
+                        resultContainer.innerHTML = '<div class="error-message"> Erreur réseau. Vérifiez votre connexion internet.</div>';
+
+                        // Animation d'apparition de l'erreur
+                        resultContainer.style.opacity = '1';
+                        resultContainer.style.transform = 'scale(1)';
+                    });
+            });
+
+            // Effets de focus améliorés
+            const inputs = document.querySelectorAll('.form-control, .form-select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.form-group').style.transform = 'translateY(-2px)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.closest('.form-group').style.transform = 'translateY(0)';
+                });
+            });
+
+            // Animation de typing pour le placeholder
+            const amountInput = document.querySelector('input[name="amount"]');
+            if (amountInput && !amountInput.value) {
+                const placeholders = ['100', '500', '1000', '50'];
+                let currentIndex = 0;
+
+                setInterval(() => {
+                    if (!amountInput.matches(':focus') && !amountInput.value) {
+                        amountInput.placeholder = `Ex: ${placeholders[currentIndex]}`;
+                        currentIndex = (currentIndex + 1) % placeholders.length;
+                    }
+                }, 3000);
+            }
+        });
+    </script>
+{% endblock %}
+
