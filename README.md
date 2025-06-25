@@ -34,12 +34,12 @@ Configurer la clé API dans `.env.local` :
 
 ```ini
 EXCHANGE_API_KEY=ta_cle_api_ici
-
+```
 Lancer le serveur Symfony : symfony server:start
 
 Visiter  https://127.0.0.1:8000
 
-```
+
 ## Contact
 Pour toute question : jemaayoussef4@gmail.com
 
